@@ -1,10 +1,17 @@
 ---
-name: tchao
-description: "Manage Tchao live chat via CLI - conversations, messages, websites, analytics. Use when user mentions 'tchao', 'live chat', 'visitor conversations', 'chat widget', or wants to interact with the Tchao API."
+name: tchao-cli
+description: "Manage Tchao live chat - conversations, messages, websites, analytics. Use when user mentions 'tchao', 'live chat', 'visitor conversations', 'chat widget', 'chat support', or wants to check/reply to visitor messages."
 category: live-chat
 ---
 
 # tchao-cli
+
+> **DESTRUCTIVE ACTIONS WARNING**
+> NEVER execute these actions without explicit user permission:
+> - `messages send` - sends a message visible to the visitor in real-time
+> - `conversations close` - permanently closes a conversation
+>
+> Always ask: "Do you want me to send/close this?" and wait for confirmation.
 
 ## Setup
 
@@ -24,43 +31,59 @@ Always use `--json` flag when calling commands programmatically.
 ```bash
 tchao-cli auth set "your-token"
 tchao-cli auth test
+tchao-cli auth show
+tchao-cli auth show --raw
+tchao-cli auth remove
 ```
 
 ## Resources
 
 ### conversations
 
-| Command | Description |
-|---------|-------------|
-| `tchao-cli conversations list --json` | List all conversations |
-| `tchao-cli conversations list --status OPEN --limit 10 --json` | List conversations filtered by status |
-| `tchao-cli conversations list --cursor <cursor> --json` | List conversations with pagination |
-| `tchao-cli conversations list --fields id,visitor,status --json` | List with specific columns |
-| `tchao-cli conversations list-open --json` | List only open conversations |
-| `tchao-cli conversations get <conversation-id> --json` | Get conversation with all messages |
-| `tchao-cli conversations close <conversation-id> --json` | Close a conversation |
+| Command | Description | Flags |
+|---------|-------------|-------|
+| `tchao-cli conversations list --json` | List all conversations | `--status <OPEN\|IN_PROGRESS\|CLOSED>`, `--limit <n>`, `--cursor <cursor>`, `--fields <cols>` |
+| `tchao-cli conversations list --status OPEN --limit 10 --json` | List open conversations with limit | |
+| `tchao-cli conversations list-open --json` | Shortcut for open conversations | `--fields <cols>` |
+| `tchao-cli conversations get <id> --json` | Get conversation with all messages | |
+| `tchao-cli conversations close <id> --json` | Close a conversation | |
 
 ### messages
 
-| Command | Description |
-|---------|-------------|
-| `tchao-cli messages send <conversation-id> --message "Hello!" --json` | Send agent message |
-| `tchao-cli messages send <conversation-id> --message "Thanks for contacting us" --json` | Send message in conversation |
+| Command | Description | Flags |
+|---------|-------------|-------|
+| `tchao-cli messages send <id> --message "text" --json` | Send agent message in conversation | `--message <text>` (required) |
 
 ### websites
 
-| Command | Description |
-|---------|-------------|
-| `tchao-cli websites list --json` | List all configured websites |
-| `tchao-cli websites list --fields id,name,url --json` | List websites with specific columns |
+| Command | Description | Flags |
+|---------|-------------|-------|
+| `tchao-cli websites list --json` | List all configured websites | `--fields <cols>` |
+| `tchao-cli websites get <id> --json` | Get website details | |
 
 ### analytics
 
-| Command | Description |
-|---------|-------------|
-| `tchao-cli analytics get --json` | Get analytics and stats data |
-| `tchao-cli analytics get --fields conversations,messages,rate --json` | Get analytics with specific columns |
+| Command | Description | Flags |
+|---------|-------------|-------|
+| `tchao-cli analytics get --json` | Get conversation counts by status | `--website-id <id>`, `--fields <cols>` |
 
-## Global Flags
+## Quick Reference
+
+```bash
+tchao-cli --help
+tchao-cli <resource> --help
+tchao-cli <resource> <action> --help
+```
+
+## Output Format
+
+`--json` returns:
+```json
+{"ok": true, "data": {...}, "meta": {"total": 42}}
+```
 
 All commands support: `--json`, `--format <text|json|csv|yaml>`, `--verbose`, `--no-color`, `--no-header`
+
+## Conversation Status Values
+
+`OPEN`, `IN_PROGRESS`, `CLOSED`

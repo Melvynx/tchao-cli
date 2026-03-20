@@ -45,7 +45,7 @@ authCommand
   .addHelpText("after", "\nExample:\n  tchao-cli auth test")
   .action(async () => {
     try {
-      await client.get("/");
+      await client.get("");
       log.success("Token is valid");
     } catch (err) {
       handleError(err);

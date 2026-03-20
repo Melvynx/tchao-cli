@@ -7,12 +7,20 @@ interface JsonEnvelope {
   meta?: { total?: number; page?: number };
 }
 
+/** Unwrap the Tchao API envelope: {success, data} -> data */
+export function unwrap(raw: unknown): unknown {
+  if (typeof raw === "object" && raw !== null && "data" in raw) {
+    return (raw as Record<string, unknown>).data;
+  }
+  return raw;
+}
+
 export function output(
   data: unknown,
-  opts: { json?: boolean; format?: string; fields?: string[]; noHeader?: boolean } = {},
+  opts: { fields?: string[]; noHeader?: boolean } = {},
 ): void {
-  const isJson = opts.json ?? globalFlags.json;
-  const format = isJson ? "json" : (opts.format ?? globalFlags.format);
+  const isJson = globalFlags.json;
+  const format = isJson ? "json" : globalFlags.format;
 
   switch (format) {
     case "json":
