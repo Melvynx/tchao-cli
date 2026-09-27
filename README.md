@@ -74,11 +74,17 @@ Manage configured websites.
 ```bash
 tchao-cli websites list
 tchao-cli websites list --json
+tchao-cli websites context xyz789 --json
+tchao-cli websites append-context xyz789 --file tools.md --heading "Admin tools"
 ```
 
 | Command | Flags |
 |---------|-------|
 | `list` | `--fields <cols>` |
+| `get <website-id>` | |
+| `context <website-id>` | |
+| `set-context <website-id>` | `--file <path>` (required, replaces everything) |
+| `append-context <website-id>` | `--file <path>` (required), `--heading <text>` |
 
 ### analytics
 
@@ -92,6 +98,25 @@ tchao-cli analytics get --json
 | Command | Flags |
 |---------|-------|
 | `get` | `--fields <cols>` |
+
+### capabilities
+
+Manage custom HTTP tools the website AI can call. Specs use the `create_capability` input shape (JSON file or `-` for stdin). Secrets are read from an env var so they never land in shell history.
+
+```bash
+tchao-cli capabilities list --website xyz789 --json
+tchao-cli capabilities create --file spec.json
+LUMAIL_KEY=... tchao-cli capabilities update abc123 --auth-type bearer --auth-secret-env LUMAIL_KEY
+tchao-cli capabilities enable abc123 --website xyz789
+```
+
+| Command | Flags |
+|---------|-------|
+| `list` | `--website <id>`, `--fields <cols>` |
+| `create` | `--file <path>` (required), `--auth-secret-env <var>`, `--website <id>` |
+| `update <id>` | `--file <path>`, `--auth-type <type>`, `--auth-secret-env <var>`, `--clear-secret` |
+| `enable <id>` / `disable <id>` | `--website <id>` (required) |
+| `delete <id>` | |
 
 ## Global Flags
 

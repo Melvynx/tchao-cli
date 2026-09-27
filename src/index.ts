@@ -6,6 +6,7 @@ import { conversationsResource } from "./resources/conversations.js";
 import { messagesResource } from "./resources/messages.js";
 import { websitesResource } from "./resources/websites.js";
 import { analyticsResource } from "./resources/analytics.js";
+import { capabilitiesResource } from "./resources/capabilities.js";
 
 const program = new Command();
 
@@ -32,5 +33,6 @@ program.addCommand(conversationsResource);
 program.addCommand(messagesResource);
 program.addCommand(websitesResource);
 program.addCommand(analyticsResource);
+program.addCommand(capabilitiesResource);
 
 program.parse();
